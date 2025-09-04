@@ -491,7 +491,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import Cookies from "js-cookie";
-
+import api from "@/api/axios";
 const activeMenu = ref("members");
 
 /* ===== 회원 관리 상태 ===== */
@@ -536,7 +536,7 @@ const newBlackout = ref({
 });
 const fetchBlackouts = async (p = 0) => {
   try {
-    const res = await axios.get("http://localhost:8081/api/roombuddy/admin/blackout", {
+    const res = await api.get("/admin/blackout", {
       params: { page: p },
       headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` }
     });
@@ -570,7 +570,7 @@ const closeReservationLog = () => {
 /* 특정 룸 예약 로그 조회 */
 const fetchReservationsByRoom = async (roomId, p = 0) => {
   try {
-    const res = await axios.get(`http://localhost:8081/api/roombuddy/admin/reservation/rooms/${roomId}`, {
+    const res = await api.get(`/admin/reservation/rooms/${roomId}`, {
       params: {
         memberEmail: reservationEmail.value || null,
         status: reservationStatus.value || null,
@@ -593,7 +593,7 @@ const fetchReservationsByRoom = async (roomId, p = 0) => {
 /* 블랙아웃 로그 조회 */
 const fetchBlackoutsByRoom = async (roomId, p = 0) => {
   try {
-    const res = await axios.get(`http://localhost:8081/api/roombuddy/admin/blackout/rooms/${roomId}`, {
+    const res = await api.get(`/admin/blackout/rooms/${roomId}`, {
       params: { page: p },
       headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` }
     });
@@ -623,7 +623,7 @@ const closeBlackoutLog = () => {
 /* 블랙아웃 생성 */
 const createBlackout = async () => {
   try {
-    const res = await axios.post("http://localhost:8081/api/roombuddy/admin/blackout",
+    const res = await api.post("/admin/blackout",
       newBlackout.value,
       { headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` } }
     );
@@ -641,7 +641,7 @@ const createBlackout = async () => {
 const deleteBlackout = async (id) => {
   if (!confirm("정말 이 블랙아웃을 제거하시겠습니까?")) return;
   try {
-    const res = await axios.delete(`http://localhost:8081/api/roombuddy/admin/blackout/${id}`, {
+    const res = await api.delete(`/admin/blackout/${id}`, {
       headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` }
     });
     if (res.data.success) {
@@ -664,7 +664,7 @@ const closeBlackoutCreateModal = () => {
 /* 예약 목록 조회 */
 const fetchReservations = async (p = 0) => {
   try {
-    const res = await axios.get("http://localhost:8081/api/roombuddy/admin/reservation", {
+    const res = await api.get("/admin/reservation", {
       params: {
         id: null, // 특정 방 조회 시 roomId 넘겨주면 됨
         memberEmail: reservationEmail.value || null,
@@ -687,7 +687,7 @@ const fetchReservations = async (p = 0) => {
 const cancelReservation = async (id) => {
   if (!confirm("정말 예약을 취소하시겠습니까?")) return;
   try {
-    const res = await axios.delete(`http://localhost:8081/api/roombuddy/admin/reservations/${id}`, {
+    const res = await api.delete(`/admin/reservations/${id}`, {
       headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` },
     });
     if (res.data.success) {
@@ -748,8 +748,8 @@ const closeUpdateModal = () => {
 
 const updateRoom = async () => {
   try {
-    const res = await axios.put(
-      `http://localhost:8081/api/roombuddy/admin/rooms/${updateRoomId.value}`,
+    const res = await api.put(
+      `/admin/rooms/${updateRoomId.value}`,
       updateRoomData.value,
       { headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` } }
     );
@@ -765,7 +765,7 @@ const updateRoom = async () => {
 
 const fetchMembers = async (p = 0) => {
   try {
-    const res = await axios.get("http://localhost:8081/api/roombuddy/admin/members", {
+    const res = await api.get("/admin/members", {
       params: {
         name: searchName.value,
         email: searchEmail.value,
@@ -803,7 +803,7 @@ const closeCreateModal = () => {
 /* 스터디룸 생성 */
 const createRoom = async () => {
   try {
-    const res = await axios.post("http://localhost:8081/api/roombuddy/admin/rooms",
+    const res = await api.post("/admin/rooms",
       newRoom.value,
       { headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` } }
     );
@@ -821,7 +821,7 @@ const createRoom = async () => {
 const deleteRoom = async (id) => {
   if (!confirm("정말 이 스터디룸을 삭제하시겠습니까?")) return;
   try {
-    const res = await axios.delete(`http://localhost:8081/api/roombuddy/admin/rooms/${id}`, {
+    const res = await api.delete(`/admin/rooms/${id}`, {
       headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` }
     });
     if (res.data.success) {
@@ -839,7 +839,7 @@ const rooms = ref([]);
 /* 스터디룸 목록 조회 */
 const fetchRooms = async () => {
   try {
-    const res = await axios.get("http://localhost:8081/api/roombuddy/rooms", {
+    const res = await api.get("/rooms", {
       headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` },
     });
     if (res.data.success) {
@@ -870,7 +870,7 @@ const selectedMember = ref(null);
 /* 회원 상세보기 */
 const getMemberInfo = async (id) => {
   try {
-    const res = await axios.get(`http://localhost:8081/api/roombuddy/admin/members/${id}`, {
+    const res = await api.get(`/admin/members/${id}`, {
       headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` },
     });
     if (res.data.success) {
@@ -885,7 +885,7 @@ const getMemberInfo = async (id) => {
 const deleteMember = async (id) => {
   if (!confirm("정말 이 회원을 삭제하시겠습니까?")) return;
   try {
-    const res = await axios.delete(`http://localhost:8081/api/roombuddy/admin/members/${id}`, {
+    const res = await api.delete(`/admin/members/${id}`, {
       headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` },
     });
     if (res.data.success) {

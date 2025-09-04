@@ -82,7 +82,7 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import Cookies from "js-cookie";
-
+import api from "@/api/axios";
 /* ===== 상태 ===== */
 const showLogin = ref(false);
 const showSignup = ref(false);
@@ -125,7 +125,7 @@ const closeAll = () => {
 /* ===== 로그인 ===== */
 const login = async () => {
   try {
-    const res = await axios.post("http://localhost:8081/api/roombuddy/auth/login", {
+    const res = await api.post("/auth/login", {
       email: username.value,
       password: password.value,
     });
@@ -148,8 +148,8 @@ const login = async () => {
 /* ===== 로그아웃 ===== */
 const logout = async () => {
   try {
-    const res = await axios.post(
-      "http://localhost:8081/api/roombuddy/auth/logout",
+    const res = await api.post(
+      "/auth/logout",
       {},
       {
         headers: {
@@ -173,7 +173,7 @@ const logout = async () => {
 /* ===== 이메일 인증 요청 ===== */
 const sendEmail = async () => {
   try {
-    const res = await axios.post("http://localhost:8081/api/roombuddy/auth/signup/email", {
+    const res = await api.post("/auth/signup/email", {
       email: signupEmail.value,
     });
     alert(res.data.data.message || "인증 메일 전송 성공");
@@ -186,7 +186,7 @@ const sendEmail = async () => {
 /* ===== 이메일 코드 확인 ===== */
 const validateEmail = async () => {
   try {
-    const res = await axios.post("http://localhost:8081/api/roombuddy/auth/signup/email/validate", {
+    const res = await api.post("/auth/signup/email/validate", {
       email: signupEmail.value,
       code: emailCode.value,
     });
@@ -210,7 +210,7 @@ const signup = async () => {
   }
 
   try {
-    await axios.post("http://localhost:8081/api/roombuddy/auth/signup", {
+    await api.post("/auth/signup", {
       email: signupEmail.value,
       password: signupPassword.value,
       passwordCheck: signupPasswordCheck.value,

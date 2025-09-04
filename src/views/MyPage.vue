@@ -136,7 +136,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "vue-router";
-
+import api from "@/api/axios";
 const member = ref(null);
 const reservations = ref([]);
 const loadingReservations = ref(true);
@@ -153,8 +153,8 @@ const editPasswordCheck = ref("");
 /* ===== 내 정보 조회 ===== */
 const fetchMyInfo = async () => {
   try {
-    const res = await axios.get(
-      "http://localhost:8081/api/roombuddy/members/me",
+    const res = await api.get(
+      "/members/me",
       {
         headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` },
       }
@@ -173,8 +173,8 @@ const withdrawMember = async () => {
   if (!confirm("정말 회원 탈퇴를 진행하시겠습니까? 😥")) return;
 
   try {
-    const res = await axios.delete(
-      "http://localhost:8081/api/roombuddy/members/me/withdraw",
+    const res = await api.delete(
+      "/members/me/withdraw",
       {
         headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` },
       }
@@ -206,8 +206,8 @@ const startEdit = (field) => {
 /* ===== 이름 수정 ===== */
 const updateName = async () => {
   try {
-    const res = await axios.put(
-      "http://localhost:8081/api/roombuddy/members/me/name",
+    const res = await api.put(
+      "/members/me/name",
       { name: editName.value },
       { headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` } }
     );
@@ -224,8 +224,8 @@ const updateName = async () => {
 /* ===== 전화번호 수정 ===== */
 const updatePhone = async () => {
   try {
-    const res = await axios.put(
-      "http://localhost:8081/api/roombuddy/members/me/phone",
+    const res = await api.put(
+      "/members/me/phone",
       { phone: editPhone.value },
       { headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` } }
     );
@@ -246,8 +246,8 @@ const updatePassword = async () => {
     return;
   }
   try {
-    const res = await axios.put(
-      "http://localhost:8081/api/roombuddy/members/me/password",
+    const res = await api.put(
+      "/members/me/password",
       {
         password: editPassword.value,
         passwordCheck: editPasswordCheck.value,
@@ -268,8 +268,8 @@ const updatePassword = async () => {
 /* ===== 내 예약 목록 조회 ===== */
 const fetchMyReservations = async () => {
   try {
-    const res = await axios.get(
-      "http://localhost:8081/api/roombuddy/reservation/me",
+    const res = await api.get(
+      "/reservation/me",
       {
         headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` },
       }
@@ -287,8 +287,8 @@ const cancelReservation = async (reservationId) => {
   if (!confirm("정말 예약을 취소하시겠습니까?")) return;
 
   try {
-    const res = await axios.delete(
-      `http://localhost:8081/api/roombuddy/reservation/${reservationId}`,
+    const res = await api.delete(
+      `/reservation/${reservationId}`,
       {
         headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` },
       }

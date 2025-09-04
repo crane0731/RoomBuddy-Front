@@ -83,6 +83,8 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import dayjs from "dayjs"
+import api from "@/api/axios";
+
 
 const rooms = ref([])
 const reservations = ref([])
@@ -98,7 +100,7 @@ import Cookies from "js-cookie" // ✅ accessToken 읽어오기
 
 onMounted(async () => {
   try {
-    const res = await axios.get("http://localhost:8081/api/roombuddy/rooms")
+    const res = await api.get("/rooms")
     if (res.data.success) {
       rooms.value = res.data.data
     }
@@ -148,8 +150,8 @@ const makeReservation = async () => {
   const duration = bookingEndHour.value - bookingStartHour.value
 
   try {
-    const res = await axios.post(
-      `http://localhost:8081/api/roombuddy/reservation/rooms/${selectedRoom.value.roomId}`,
+    const res = await api.post(
+      `/reservation/rooms/${selectedRoom.value.roomId}`,
       { startAt, endAt, duration },
       { headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` } }
     )
@@ -171,16 +173,16 @@ const openReservation = async (room) => {
 
   try {
     // ✅ 예약 조회
-    const res1 = await axios.get(
-      `http://localhost:8081/api/roombuddy/reservation/rooms/${room.roomId}`
+    const res1 = await api.get(
+      `/reservation/rooms/${room.roomId}`
     )
     if (res1.data.success) {
       reservations.value = res1.data.data
     }
 
     // ✅ 오늘 블랙아웃 조회
-    const res2 = await axios.get(
-      `http://localhost:8081/api/roombuddy/blackout/rooms/${room.roomId}/today`
+    const res2 = await api.get(
+      `/blackout/rooms/${room.roomId}/today`
     )
     if (res2.data.success) {
       blackouts.value = res2.data.data
