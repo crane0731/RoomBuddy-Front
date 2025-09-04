@@ -1,6 +1,6 @@
 import axios from "axios";
 
-//테스트
+//테스트 
 // 환경에 따라 baseURL 다르게 (로컬 dev vs 배포)
 const baseURL =
   import.meta.env.MODE === "development"
