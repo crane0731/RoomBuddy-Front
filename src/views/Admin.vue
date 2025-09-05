@@ -94,20 +94,15 @@
   <!-- 예약 관리 -->
 <div v-if="activeMenu === 'reservations'">
   <h3>현재 진행중인 예약</h3>
+ <!-- ✅ 방 ID 입력/선택 -->
+<input
+  v-model="reservationRoomId"
+  placeholder="Room ID 입력"
+  @keyup.enter="fetchReservations(0, reservationRoomId)"
+/>
+<button @click="fetchReservations(0, reservationRoomId)">조회</button>
 
-  
 
-  <!-- 필터 -->
-  <div class="filters">
-    <input v-model="reservationEmail" placeholder="회원 이메일 검색" />
-    <select v-model="reservationStatus">
-      <option value="">상태 전체</option>
-      <option value="CONFIRMED">예약중</option>
-      <option value="COMPLETED">완료</option>
-      <option value="CANCELLED">취소됨</option>
-    </select>
-    <button @click="fetchReservations(0)">검색</button>
-  </div>
 
   <!-- 예약 목록 테이블 -->
   <table class="reservation-table">
@@ -662,13 +657,11 @@ const closeBlackoutCreateModal = () => {
 
 
 /* 예약 목록 조회 */
-const fetchReservations = async (p = 0) => {
+const fetchReservations = async (p = 0, roomId = null) => {
   try {
     const res = await api.get("/admin/reservation", {
       params: {
-        id: null, // 특정 방 조회 시 roomId 넘겨주면 됨
-        memberEmail: reservationEmail.value || null,
-        status: reservationStatus.value || null,
+        id: roomId || reservationRoomId.value || null,  // ✅ 수정
         page: p
       },
       headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` }
@@ -679,6 +672,7 @@ const fetchReservations = async (p = 0) => {
       reservationTotalPages.value = res.data.data.totalPages;
     }
   } catch (err) {
+    console.error("예약 목록 조회 에러:", err);
     alert("예약 목록 불러오기 실패 ❌");
   }
 };
